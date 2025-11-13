@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  fixed_point_app:
+    build: .
+    container_name: fixed_point_app
+    command: ["python", "-m", "app.cli"]
+    volumes:
+      - ./data:/app/data
+      - ./reports:/app/reports
+    environment:
+      - PYTHONUNBUFFERED=1
+
