@@ -48,17 +48,3 @@ docker run --rm -it -v "%cd%\reports:/app/reports" -v "%cd%\data:/app/data" stor
 
 python -m pytest -v #запуск тестов 
 ```
-
-
-
-version: "3.9"
-
-services:
-  fixed_quine:
-    build: .
-    container_name: fixed_quine_app
-    image: fixed_quine_app:latest
-    command: ["python", "-m", "app.cli"]
-    volumes:
-      - ./:/app
-    working_dir: /app
