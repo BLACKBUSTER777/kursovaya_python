@@ -11,4 +11,5 @@ COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Указываем CLI как точку входа
-CMD ["python", "-m", "app.cli"]
+ENTRYPOINT ["python", "-m", "app.cli"]
+CMD []

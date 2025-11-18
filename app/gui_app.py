@@ -49,11 +49,11 @@ class QuineGUI(QWidget):
         self.run_button.clicked.connect(self.run_local)
         self.layout.addWidget(self.run_button)
 
-        '''
+
         self.docker_button = QPushButton("Запустить в Docker")
         self.docker_button.clicked.connect(self.run_in_docker)
         self.layout.addWidget(self.docker_button)
-        '''
+
 
         self.test_button = QPushButton("Запустить тесты (pytest)")
         self.test_button.clicked.connect(self.run_tests)
@@ -82,13 +82,15 @@ class QuineGUI(QWidget):
 
         # Отображаем результат
         self.output_area.setPlainText(result)
-        add_log("Запуск локальный", result)
+        add_log("Запуск в GUI", result)
 
         if code != 0:
             QMessageBox.warning(self, "Ошибка", f"Код завершения: {code}")
         
     def run_in_docker(self):
-        """Сборка и запуск программы в Docker."""
+        """Запуск программы в Docker с передачей пользовательского ввода."""
+        user_input = self.input_field.text().strip()
+
         try:
             subprocess.run(["docker", "--version"], check=True, stdout=subprocess.PIPE)
         except Exception:
@@ -96,33 +98,38 @@ class QuineGUI(QWidget):
             return
 
         project_root = Path(__file__).parent.parent.resolve()
-        dockerfile = project_root / "Dockerfile"
+        db_path_host = project_root / "app" / "app_logs.db"
+        docker_db_path = "/app/app/app_logs.db"
 
-        if not dockerfile.exists():
-            QMessageBox.critical(self, "Ошибка", "Файл Dockerfile не найден.")
-            return
+        # Убедимся, что файл БД существует
+        if not db_path_host.exists():
+            db_path_host.touch()
+
+        build_cmd = ["docker", "build", "-t", "fixedpoint-app", str(project_root)]
+
+        run_cmd = [
+            "docker", "run", "--rm",
+            "-v", f"{db_path_host}:{docker_db_path}",
+            "fixedpoint-app", user_input
+        ]
 
         try:
-            # Сборка Docker-образа
-            build_cmd = ["docker", "build", "-t", "fixed_quine_app", str(project_root)]
             self.output_area.setPlainText("Сборка Docker-образа...\n")
             subprocess.run(build_cmd, check=True, text=True, encoding="utf-8", errors="ignore")
 
-            # Запуск контейнера
-            run_cmd = ["docker", "run", "--rm", "-it", "-v", "fixed_quine_app"]
             self.output_area.append("Запуск контейнера...\n")
             result = subprocess.run(
-                run_cmd, check=True, stdout=subprocess.PIPE, text=True, encoding="utf-8", errors="ignore"
+                run_cmd, check=True, stdout=subprocess.PIPE,
+                text=True, encoding="utf-8", errors="ignore"
             )
-            output = result.stdout
 
+            output = result.stdout
             self.output_area.append("=== РЕЗУЛЬТАТ ===\n")
             self.output_area.append(output)
-            add_log("Запуск Docker", output)
+            add_log("Запуск через Docker (GUI)", output)
 
         except subprocess.CalledProcessError as e:
-            QMessageBox.critical(self, "Ошибка Docker", f"Не удалось запустить контейнер:\n{e}")
-        
+            QMessageBox.critical(self, "Ошибка Docker", f"Ошибка:\n{e}")
 
     def run_tests(self):
         """Запуск тестов с помощью pytest."""

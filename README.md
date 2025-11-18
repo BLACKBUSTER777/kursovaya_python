@@ -42,23 +42,7 @@ python -m app.gui_app
 
 ## запуск тестов и Docker
 ```bash
-docker build --platform linux/amd64 -t myapp . # Собрать образ
-docker run --rm -it storage-app
-docker run --rm -it -v "%cd%\reports:/app/reports" -v "%cd%\data:/app/data" storage-app
-
+docker build --platform linux/amd64 -t fixedpoint-app . # Собрать образ
+docker run --rm -it -v "%cd%\app\app_logs.db:/app/app/app_logs.db" fixedpoint-app "Текст Пользователя"
 python -m pytest -v #запуск тестов 
 ```
-
-
-
-version: "3.9"
-
-services:
-  fixed_quine:
-    build: .
-    container_name: fixed_quine_app
-    image: fixed_quine_app:latest
-    command: ["python", "-m", "app.cli"]
-    volumes:
-      - ./:/app
-    working_dir: /app

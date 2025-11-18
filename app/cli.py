@@ -20,7 +20,7 @@ def main(argv=None) -> int:
     code, output = run_tiny_on_source(script_path, input_text)
 
     sys.stdout.write(output)
-    add_log("Запуск тестов", output)
+    add_log("Запуск в CLI", output) 
     return code
 
 
