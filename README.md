@@ -26,7 +26,8 @@ Pytest-тесты
 - `quine_core.py` — Чтение исходника, формирование f(P).
 - `tinylang.py` —  Интерпретатор TinyLang.
 - `test_tinylang.py` —  тесты.
-##Технические требования
+- 
+## Технические требования
 •	Язык программирования: Python 3.10+
 •	Библиотеки: PySide6, pytest, sqlite3 (встроенная), subprocess, Docker
 •	Платформы: Windows / Linux / macOS.
