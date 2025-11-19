@@ -26,7 +26,7 @@ Pytest-тесты
 - `quine_core.py` — Чтение исходника, формирование f(P).
 - `tinylang.py` —  Интерпретатор TinyLang.
 - `test_tinylang.py` —  тесты.
--  
+  
 ## Технические требования
 - Язык программирования: Python 3.10+
 - Библиотеки: PySide6, pytest, sqlite3 (встроенная), subprocess, Docker
@@ -43,9 +43,10 @@ source .venv/bin/activate  # Linux/macOS
 pip install -r requirements.txt
 ```
 
-## Запуск GUI
+## Запуск GUI, CLI
 ```bash
 python -m app.gui_app
+python -m app.cli
 ```
 
 ## запуск тестов и Docker
